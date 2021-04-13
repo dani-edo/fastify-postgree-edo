@@ -1,5 +1,6 @@
 'use strict'
 
+const { noteSchema } = require('./schemas');
 const NotesDAL = require('../../service/notesDAL');
 
 module.exports = async function (fastify, opts) {
@@ -14,12 +15,7 @@ module.exports = async function (fastify, opts) {
       response: {
         200: {
           type: 'array',
-          required: ['id', 'title', 'body'],
-          properties: {
-            id: { type: 'number', description: 'Unique identifier for ...' },
-            title: { type: 'string' },
-            body: { type: 'string', description: 'Main content of the ...' }
-          }
+          items: noteSchema
         }
       }
     },
@@ -43,15 +39,7 @@ module.exports = async function (fastify, opts) {
         }
       },
       response: {
-        200: {
-          type: 'object',
-          required: ['id', 'title', 'body'],
-          properties: {
-            id: { type: 'number', description: 'Unique identifier for ...' },
-            title: { type: 'string' },
-            body: { type: 'string', description: 'Main content of the ...' }
-          }
-        }
+        200: noteSchema
       }
     },
     handler: async (request, reply) => {
@@ -75,14 +63,7 @@ module.exports = async function (fastify, opts) {
         }
       },
       response: {
-        200: {
-          type: 'object',
-          properties: {
-            id: { type: 'number', description: 'Unique identifier for ...' },
-            title: { type: 'string' },
-            body: { type: 'string', description: 'Main content of the ...' }
-          }
-        }
+        200: noteSchema
       }
     },
     handler: async (request, reply) => {
