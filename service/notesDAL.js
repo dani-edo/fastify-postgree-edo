@@ -8,7 +8,11 @@ const notesDAL = (db) => {
     );
     return { id, title, body };
   };
-  return { createNote };
+  const getNotes = () => {
+    return db.manyOrNone('SELECT id, title, body FROM notes');
+  }
+
+  return { createNote, getNotes };
 };
 
 module.exports = notesDAL;
