@@ -9,8 +9,16 @@ const notesDAL = (db) => {
     return { id, title, body };
   };
 
-  const getNotes = () => {
-    return db.manyOrNone("SELECT id, title, body FROM notes");
+  const getNotes = (vectorSearch) => {
+    const queryArgs = [];
+    let query = "SELECT id, title, body FROM notes";
+
+    if (vectorSearch) {
+      queryArgs.push(vectorSearch, `%${vectorSearch.toLowerCase()}%`);
+      query += ' WHERE body_vector @@ to_tsquery($1) OR lower(body) LIKE $2 LIMIT 10';
+    }
+
+    return db.manyOrNone(query, queryArgs);
   };
 
   const updateNote = async (id, title, body) => {

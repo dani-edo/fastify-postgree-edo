@@ -12,6 +12,12 @@ module.exports = async function (fastify, opts) {
     schema: {
       tags: [ 'notes' ],
       description: 'Get all notes',
+      querystring: {
+        type: 'object',
+        properties: {
+          'filter[body]': { type: 'string', description: 'Vector match against the body field' }
+        }
+      },
       response: {
         200: {
           type: 'array',
@@ -20,7 +26,8 @@ module.exports = async function (fastify, opts) {
       }
     },
     handler: async (request, reply) => {
-      return notesDAL.getNotes();
+      const vectorSearch = request.query['filter[body]']
+      return notesDAL.getNotes(vectorSearch);
     }
   })
 
