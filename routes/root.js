@@ -1,12 +1,9 @@
 'use strict'
 
 module.exports = async function (fastify, opts) {
-  fastify.get('/', async function (request, reply) {
-    return { root: true }
-  })
   fastify.route({
     method: 'GET',
-    url: '/healthcheck',
+    url: '/',
     schema: {
       tags: [ 'healthcheck' ],
       description: 'healthcheck endpoint to etermine services is up and running',
