@@ -22,4 +22,8 @@ module.exports = async function (fastify, opts) {
     dir: path.join(__dirname, 'routes'),
     options: Object.assign({ prefix: '/api' }, opts)
   })
+
+  if (process.env.NODE_ENV === 'develpment') {
+    fastify.log.info(fastify.printRoutes())
+  }
 }

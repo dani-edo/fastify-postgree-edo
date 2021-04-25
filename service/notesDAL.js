@@ -3,7 +3,7 @@ const notesDAL = (db) => {
     const {
       id,
     } = await db.one(
-      "INSERT INTO notes (title, body) VALUES ($1, $2) RETURNING id",
+      "INSERT INTO notes (title, body, body_vector) VALUES ($1, $2, to_tsvector('pg_catalog.english', substring($2, 1, 1000000))) RETURNING id",
       [title, body]
     );
     return { id, title, body };

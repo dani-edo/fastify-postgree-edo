@@ -8,6 +8,11 @@ function loadEnv(keyname) {
   return envar;
 }
 
+function loadArrayEnv(keyname) {
+  return loadEnv(keyname).split(',');
+}
+
 module.exports = {
   postgres: loadEnv('POSTGRES_URI'),
+  sessionSecret: loadArrayEnv('SESSION_SECRET'),
 };
