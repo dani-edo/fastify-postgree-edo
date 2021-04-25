@@ -35,4 +35,4 @@ module.exports = fp(async function (fastify, opts) {
       msg: "Successful migrations run",
     });
   }
-});
+}, { name: 'db' });
