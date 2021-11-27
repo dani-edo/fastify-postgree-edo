@@ -2,6 +2,13 @@
 
 const { noteSchema } = require('./schemas');
 const NotesDAL = require('../../service/notesDAL');
+const { isLoggedIn } = require('../../middleware/isLoggedIn');
+
+/**
+ * 
+ * @param {import('fastify').FastifyInstance} fastify 
+ * @param {*} opts 
+ */
 
 module.exports = async function (fastify, opts) {
   const notesDAL = NotesDAL(fastify.db);
@@ -49,9 +56,11 @@ module.exports = async function (fastify, opts) {
         200: noteSchema
       }
     },
+    preHandler: isLoggedIn,
     handler: async (request, reply) => {
       const { title, body } = request.body;
-      const newNote = await notesDAL.createNote(title, body);
+      const userId = request.user;
+      const newNote = await notesDAL.createNote(title, body, userId);
       return newNote
     }
   })

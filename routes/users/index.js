@@ -1,5 +1,6 @@
 "use strict";
 const bcrypt = require("bcryptjs");
+const { isLoggedIn } = require("../../middleware/isLoggedIn");
 
 const routes = async function (fastify, opts) {
   fastify.post(
@@ -63,7 +64,7 @@ const routes = async function (fastify, opts) {
           throw new Error();
         }
 
-        request.session.user = { userId: user.id };
+        request.session.user = { userId: user.id, isLoggedIn: true };
 
         return { id: user.id, username: user.username, success: true };
       } catch (error) {
@@ -72,9 +73,9 @@ const routes = async function (fastify, opts) {
     }
   );
 
-  fastify.get("/me", async (request, reply) => {
-    const { userId } = request.session.user;
+  fastify.get("/me", { preHandler: isLoggedIn }, async (request, reply) => {
     try {
+      const userId = request.user;
       const user = await fastify.db.one(
         "SELECT id, username FROM users WHERE id = $1",
         [userId]

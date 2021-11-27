@@ -1,10 +1,12 @@
+// DAL: data access layer
+
 const notesDAL = (db) => {
-  const createNote = async (title, body) => {
+  const createNote = async (title, body, userId) => {
     const {
       id,
     } = await db.one(
-      "INSERT INTO notes (title, body, body_vector) VALUES ($1, $2, to_tsvector('pg_catalog.english', substring($2, 1, 1000000))) RETURNING id",
-      [title, body]
+      "INSERT INTO notes (title, body, body_vector, user_id) VALUES ($1, $2, to_tsvector('pg_catalog.english', substring($2, 1, 1000000)), $3) RETURNING id",
+      [title, body, userId]
     );
     return { id, title, body };
   };

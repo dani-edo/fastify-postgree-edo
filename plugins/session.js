@@ -14,14 +14,14 @@ module.exports = fp(async function (fastify, opts) {
   fastify.register(cookie);
   fastify.register(session, {
     store: new SessionStore({
-      tableName: "user_sessions",
+      tableName: "user_sessions", // table column for save user session
       pool: fastify.db.$pool,
     }),
-    secret: appConfig.sessionSecret,
-    saveUnitialized: false,
+    secret: appConfig.sessionSecret, // session secret env
+    saveUnitialized: false, // mean: don't mark session cookie just because somebody requested to our server, instead wait for us to actually declare a session
     cookie: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV !== "development",
+      httpOnly: true, // cookie http only
+      secure: process.env.NODE_ENV !== "development", // just send if connection is TLS
     },
   });
-}, { name: 'session', dependencies: ['db']});
+}, { name: 'session', dependencies: ['db']}); // dependencies make js load dependencies first before this

@@ -19,11 +19,11 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  var filePath = path.join(__dirname, '..', 'node_modules', 'connect-pg-simple', 'table.sql'); // custom to use connect-pg-simple
+  var filePath = path.join(__dirname, 'sqls', '20210425225152-user-notes-up.sql');
   return new Promise( function( resolve, reject ) {
     fs.readFile(filePath, {encoding: 'utf-8'}, function(err,data){
       if (err) return reject(err);
-      data = data.replace(/"session"/g, "user_sessions") // custom
+      console.log('received data: ' + data);
 
       resolve(data);
     });
@@ -34,7 +34,7 @@ exports.up = function(db) {
 };
 
 exports.down = function(db) {
-  var filePath = path.join(__dirname, 'sqls', '20210425162213-user-session-down.sql');
+  var filePath = path.join(__dirname, 'sqls', '20210425225152-user-notes-down.sql');
   return new Promise( function( resolve, reject ) {
     fs.readFile(filePath, {encoding: 'utf-8'}, function(err,data){
       if (err) return reject(err);
