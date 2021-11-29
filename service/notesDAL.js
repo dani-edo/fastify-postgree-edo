@@ -11,13 +11,18 @@ const notesDAL = (db) => {
     return { id, title, body };
   };
 
-  const getNotes = (vectorSearch) => {
+  const getNotes = (vectorSearch, userId) => {
     const queryArgs = [];
     let query = "SELECT id, title, body FROM notes";
 
     if (vectorSearch) {
-      queryArgs.push(vectorSearch, `%${vectorSearch.toLowerCase()}%`);
-      query += ' WHERE body_vector @@ to_tsquery($1) OR lower(body) LIKE $2 LIMIT 10';
+      // queryArgs.push(vectorSearch, `%${vectorSearch.toLowerCase()}%`, userId);
+      // query += ' WHERE body_vector @@ to_tsquery($1) OR lower(body) LIKE $2 AND user_id = $3 LIMIT 10';
+      queryArgs.push(vectorSearch, userId);
+      query += ' WHERE body_vector @@ to_tsquery($1) AND user_id = $2 LIMIT 10';
+    } else {
+      queryArgs.push(userId);
+      query += ' WHERE user_id = $1'
     }
 
     return db.manyOrNone(query, queryArgs);

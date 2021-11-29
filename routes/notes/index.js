@@ -32,9 +32,12 @@ module.exports = async function (fastify, opts) {
         }
       }
     },
+    preHandler: isLoggedIn,
     handler: async (request, reply) => {
       const vectorSearch = request.query['filter[body]']
-      return notesDAL.getNotes(vectorSearch);
+      const userId = request.user
+
+      return notesDAL.getNotes(vectorSearch, userId);
     }
   })
 
