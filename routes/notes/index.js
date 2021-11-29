@@ -13,6 +13,8 @@ const { isLoggedIn } = require('../../middleware/isLoggedIn');
 module.exports = async function (fastify, opts) {
   const notesDAL = NotesDAL(fastify.db);
 
+  fastify.addHook('preHandler', isLoggedIn);
+
   fastify.route({
     method: 'GET',
     url: '/',
@@ -32,7 +34,6 @@ module.exports = async function (fastify, opts) {
         }
       }
     },
-    preHandler: isLoggedIn,
     handler: async (request, reply) => {
       const vectorSearch = request.query['filter[body]']
       const userId = request.user
@@ -59,7 +60,6 @@ module.exports = async function (fastify, opts) {
         200: noteSchema
       }
     },
-    preHandler: isLoggedIn,
     handler: async (request, reply) => {
       const { title, body } = request.body;
       const userId = request.user;
@@ -88,7 +88,9 @@ module.exports = async function (fastify, opts) {
     handler: async (request, reply) => {
       const { id } = request.params;
       const { title, body } = request.body;
-      const updateNote = await notesDAL.updateNote(id, title, body);
+      const userId = request.user;
+
+      const updateNote = await notesDAL.updateNote(id, title, body, userId);
       return updateNote
     }
   })
@@ -115,7 +117,9 @@ module.exports = async function (fastify, opts) {
     },
     handler: async (request, reply) => {
       const { id } = request.params;
-      const updateNote = await notesDAL.deleteNote(id);
+      const userId = request.user;
+
+      const updateNote = await notesDAL.deleteNote(id, userId);
       reply.status(204);
     }
   })

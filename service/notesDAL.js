@@ -28,17 +28,17 @@ const notesDAL = (db) => {
     return db.manyOrNone(query, queryArgs);
   };
 
-  const updateNote = async (id, title, body) => {
+  const updateNote = async (id, title, body, userId) => {
     await db.one(
-      "UPDATE notes SET title = $1, body = $2 where id = $3 RETURNING id",
-      [title, body, id]
+      "UPDATE notes SET title = $1, body = $2 where id = $3 AND user_id = $4 RETURNING id",
+      [title, body, id, userId]
     );
 
     return { id, title, body };
   };
 
-  const deleteNote = (id) => {
-    return db.query("DELETE FROM notes WHERE id = $1", [id]);
+  const deleteNote = (id, userId) => {
+    return db.query("DELETE FROM notes WHERE id = $1 AND user_id = $2", [id, userId]);
   };
 
   return { createNote, getNotes, updateNote, deleteNote };
