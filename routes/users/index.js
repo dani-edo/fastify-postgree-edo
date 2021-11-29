@@ -2,6 +2,12 @@
 const bcrypt = require("bcryptjs");
 const { isLoggedIn } = require("../../middleware/isLoggedIn");
 
+/**
+ *
+ * @param {import('fastify').FastifyInstance} fastify
+ * @param {*} opts
+ */
+
 const routes = async function (fastify, opts) {
   fastify.post(
     "/signup",
@@ -70,6 +76,25 @@ const routes = async function (fastify, opts) {
       } catch (error) {
         throw new Error("Invalid username/password combination");
       }
+    }
+  );
+
+  fastify.post(
+    "/logout",
+    { preHandler: isLoggedIn },
+    async (request, reply) => {
+      request.session.user = null;
+      request.sessionStore.destroy(request.session.sessionId, (err) => {
+        if (err) {
+          reply.code(500);
+          reply.send({ message: "Something whent wrong", success: false });
+          return;
+        }
+      });
+      reply.send({
+        success: true,
+        loggedOut: true,
+      });
     }
   );
 

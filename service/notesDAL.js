@@ -38,7 +38,7 @@ const notesDAL = (db) => {
   };
 
   const deleteNote = (id, userId) => {
-    return db.query("DELETE FROM notes WHERE id = $1 AND user_id = $2", [id, userId]);
+    return db.query("DELETE FROM notes WHERE id = $1 AND user_id = $2 RETURNING *", [id, userId]);
   };
 
   return { createNote, getNotes, updateNote, deleteNote };
