@@ -119,7 +119,14 @@ module.exports = async function (fastify, opts) {
       const { id } = request.params;
       const userId = request.user;
 
-      const updateNote = await notesDAL.deleteNote(id, userId);
+      try {
+        await notesDAL.findNoteById(id, userId)
+      } catch (error) {
+        reply.code(404)
+        throw new Error('Resource not found')
+      }
+
+      await notesDAL.deleteNote(id, userId);
       reply.status(204);
     }
   })

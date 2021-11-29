@@ -37,11 +37,15 @@ const notesDAL = (db) => {
     return { id, title, body };
   };
 
+  const findNoteById = (id, userId) => {
+    return db.one("SELECT id, title, body FROM notes WHERE id = $1 AND user_id = $2", [id, userId]);
+  };
+
   const deleteNote = (id, userId) => {
     return db.query("DELETE FROM notes WHERE id = $1 AND user_id = $2 RETURNING *", [id, userId]);
   };
 
-  return { createNote, getNotes, updateNote, deleteNote };
+  return { createNote, getNotes, updateNote, deleteNote, findNoteById };
 };
 
 module.exports = notesDAL;
